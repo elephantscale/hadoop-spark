@@ -3,7 +3,7 @@
 CREATE EXTERNAL TABLE clickstream (
     ts BIGINT,
     ip STRING,
-    user STRING,
+    userid STRING,
     action STRING,
     domain STRING,
     campaign STRING,
