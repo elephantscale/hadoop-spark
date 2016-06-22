@@ -81,6 +81,12 @@ And execute the queries in the shell:
 
 ```sql
 
+-- see the tables
+    show tables;
+
+-- inspect clickstream table
+    desc clickstream;
+
 -- quick view of data
     select * from clickstream limit 10;
 
