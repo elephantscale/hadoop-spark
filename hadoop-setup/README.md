@@ -3,7 +3,13 @@
 ## Working Directory
 hadoop-setup
 
-## STEP 1 : Inspect Clickstream data
+## STEP 1 : Login to Sandbox
+Here is the command
+```
+    $    ssh -l root -p 2222  127.0.0.1
+```
+
+## STEP 2 : Inspect Clickstream data
 
 Clickstream file in :   data/clickstream/clickstream.csv
 
@@ -14,18 +20,23 @@ Clickstream file in :   data/clickstream/clickstream.csv
 
 ```
 
-## STEP 2 : Copy Clickstream data into HDFS
+## STEP 3 : Go to working directory
+```
+    $   cd  ~/hadoop-spark/hadoop-setup
+```
+
+## STEP 4 : Copy Clickstream data into HDFS
 
 ```
     $   hdfs dfs  -mkdir  -p   clickstream/in
 
-    $   hdfs  dfs  -put   data/clickstream/clickstream.csv    clickstream/in/
+    $   hdfs  dfs  -put   ../data/clickstream/clickstream.csv    clickstream/in/
 ```
 
 Generate more clickstream data using the given python script, and copy these into HDFS as well.
 
 ```
-    $   python data/clickstream/gen-clickstream.py
+    $   python ../data/clickstream/gen-clickstream.py
 
     $   hdfs  dfs  -put   *.csv    clickstream/in/
 ```
@@ -41,7 +52,7 @@ And inspect the files in HDFS using CLI and HDFS UI.
 * Navigate to HDFS directory :  /user/root/clickstream/in
 
 
-## STEP 3 : Setup HIVE Table for Clickstream
+## STEP 5 : Setup HIVE Table for Clickstream
 
 Inspect the `clickstream.hql` file in this directory.
 
@@ -68,7 +79,7 @@ Execute this file as follows to create a Hive table:
 ```
 
 
-## STEP 4 : Hive Queries
+## STEP 6 : Hive Queries
 
 Now let's do some Hive queries on our data
 
