@@ -4,10 +4,7 @@
 hadoop-setup
 
 ## STEP 1 : Login to Sandbox
-Here is the command
-```
-    $    ssh -l root -p 2222  127.0.0.1
-```
+Follow instructions for your system.
 
 ## STEP 2 : Inspect Clickstream data
 

@@ -20,8 +20,8 @@ We will be using the following :
     - hostname : 127.0.0.1
     - port : 2222
     - user : root
-    - password : hadoop
-If you are using command line ssh client you can do the following:
+    - password : (default is hadoop)
+* If you are using command line ssh client you can do the following:
 ```
     $     ssh  -l  root   -p 2222   127.0.0.1
 ```

@@ -7,10 +7,7 @@ spark-shell
 [Hadoop setup](../hadoop-setup/README.md)
 
 ## Step 1 : Login to Sandbox
-Here is the command
-```
-    $    ssh -l root -p 2222  127.0.0.1
-```
+Follow instructions for your environment.
 
 ## Step 2 : Start Spark shell
 
@@ -19,8 +16,9 @@ Here is the command
 ```
 
 ## Step 3 : Set the log level to WARN
+Type this in Spark Shell
 ```
-    scala>    sc.setLogLevel("WARN")
+    sc.setLogLevel("WARN")
 ```
 
 ## Step 4 : Inspect the Shell UI
