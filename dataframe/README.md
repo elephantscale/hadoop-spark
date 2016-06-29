@@ -93,3 +93,12 @@ Use tab completion to explore methods available
 ```
     clickstream.groupBy("domain").count.show
 ```
+
+## Step 6 : Load all JSON data
+Let's load all JSON files in `clickstream/in-json` directory
+
+```
+    val clicks = sqlContext.read.json("/user/root/clickstrea/in-json/")
+    clicks.count
+    clickstream.groupBy("domain").count.show
+```
