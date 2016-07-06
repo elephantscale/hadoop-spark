@@ -14,3 +14,4 @@ You can clone this repository as follows
 3. [Spark Shell](spark-shell/README.md)
 4. [RDDs](rdd/README.md)
 5. [Dataframes](dataframe/README.md)
+6. [Hive and Spark](hive-spark/README.md)

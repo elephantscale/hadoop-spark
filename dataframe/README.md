@@ -29,7 +29,7 @@ Let's generate some more clickstream JSON data and stage into HDFS.
 
 ```
     #  generate data
-    $  python ../data/clickstream/gen-clickstream.py
+    $  python ../data/clickstream/gen-clickstream-json.py
 
     #  copy data to HDFS
     $  hdfs dfs -put   *.json   clickstream/in-json/
@@ -55,13 +55,13 @@ And set the log level to WARN
 ## Step 3 : Load JSON into Dataframe
 Issue the following commands in Spark-shell
 
-```
-        val clickstream = sqlContext.read.json("/user/root/clickstrea/in-json/clickstream.json")
+```scala
+        val clickstream = sqlContext.read.json("/user/root/clickstream/in-json/clickstream.json")
 
-        # inspect the schema
+        // inspect the schema
         clickstream.printSchema
 
-        # inspect data
+        // inspect data
         clickstream.show
 ```
 
@@ -76,29 +76,55 @@ Use tab completion to explore methods available
 ## Step 5 : Querying Dataframes
 
 **Find records that have cost > 100**
-```
+```scala
+
     val over100 = clickstream.filter(clickstream("cost") > 100)
     over100.show
 
-    # count the records
+    // count the records
     over100.count
 ```
 
 **Count records where action = 'click'**  
-```
-    clickstream.filter(clickstream("action") === "click")).count
+```scala
+
+    clickstream.filter(clickstream("action") === "clicked").count
 ```
 
 **Count the number of visits from each domain**    
-```
+```scala
+
     clickstream.groupBy("domain").count.show
 ```
 
-## Step 6 : Load all JSON data
+## Step 6 : Querying Using SQL
+
+```scala
+
+    //  register the data frame as a temporary table
+    clickstream.registerTempTable("clickstream")
+
+    // try sql queries
+    sqlContext.sql("select * from clickstream").show
+
+    // find all facebook traffic
+    sqlContext.sql("select * from clickstream where domain = 'facebook.com'").show
+
+    // count traffic per domain from highest to lowest
+    sqlContext.sql("select domain, count(*) as total from clickstream  group by domain order by total desc").show
+
+```
+
+
+## Step 7 : Load all JSON data
 Let's load all JSON files in `clickstream/in-json` directory
 
-```
-    val clicks = sqlContext.read.json("/user/root/clickstrea/in-json/")
+```scala
+
+    val clicks = sqlContext.read.json("/user/root/clickstream/in-json/")
     clicks.count
-    clickstream.groupBy("domain").count.show
+
+    clicks.groupBy("domain").count.show
+
+    // repeat instructions from step 6
 ```
