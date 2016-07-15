@@ -1,9 +1,0 @@
-[0m[[0minfo[0m] [0mPackaging /Users/sujee/ElephantScale/hadoop-spark/spark-app/target/scala-2.10/testapp_2.10-1.0.jar ...[0m
-[0m[[0mdebug[0m] [0mInput file mappings:[0m
-[0m[[0mdebug[0m] [0m	x[0m
-[0m[[0mdebug[0m] [0m	  /Users/sujee/ElephantScale/hadoop-spark/spark-app/target/scala-2.10/classes/x[0m
-[0m[[0mdebug[0m] [0m	x/Clickstream$.class[0m
-[0m[[0mdebug[0m] [0m	  /Users/sujee/ElephantScale/hadoop-spark/spark-app/target/scala-2.10/classes/x/Clickstream$.class[0m
-[0m[[0mdebug[0m] [0m	x/Clickstream.class[0m
-[0m[[0mdebug[0m] [0m	  /Users/sujee/ElephantScale/hadoop-spark/spark-app/target/scala-2.10/classes/x/Clickstream.class[0m
-[0m[[0minfo[0m] [0mDone packaging.[0m
