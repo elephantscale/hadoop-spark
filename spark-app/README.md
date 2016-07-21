@@ -51,24 +51,46 @@ From the `spark-app` folder
 ```
 
 
-## Step 5 : Submit Spark Application
+## Step 5 : Testing Spark Application in 'local' mode
+Before submitting the application to the cluster, let's test it locally to make sure it works
+
+```
+    $    spark-submit --master local[*] \
+         --driver-memory 512m --executor-memory 512m \
+        
+         --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \
+         ../data/clickstream/clickstream.json
+```
+
+Arguments (must have):
+* --master local[*]: Run in local mode using all CPU cores (*)
+* --class 'x.Clickstream' : name of the class to execute
+* 'target/scala-2.10/testapp_2.10-1.0.jar' : location of jar file
+* input location : point to the data.  Here we are using local file in 'data/clickstream/clickstream.json'
+
+Arguments (optional):
+* --driver-memory 512m  : memory to be used by client application
+* --executor-memory 512m : memory used by Spark executors
+
+
+## Step 6 : Submit Spark Application to YARN cluster
 Here is the command to submit the Spark application
 
 ```
-    $    spark-submit --master yarn-client \
+    $    spark-submit --master local[*] \
          --driver-memory 512m --executor-memory 512m \
          --num-executors 2 --executor-cores 1  \
          --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \
          /user/root/clickstream/in-json/clickstream.json
 ```
 
-Here is what these arguments mean.  
+
 
 Must have arguments:
 * --master : we are submitting to YARN in 'client' mode.  Another option is `--master yarn-cluster`
 * --class 'x.Clickstream' : name of the class to execute
 * 'target/scala-2.10/testapp_2.10-1.0.jar' : location of jar file
-* input location : point to the data.  Here we are using '/user/root/clickstream/in-json/clickstream.json'
+* input location : point to the data.  Here we are using data in HDFS '/user/root/clickstream/in-json/clickstream.json'
 
 Optional arguments:
 * --driver-memory 512m  : memory to be used by client application
@@ -79,13 +101,14 @@ Optional arguments:
 Since we are running on a virtual machine, we are keeping our resource usage low by specifying low memory usage (512M) and only using one CPU core.
 
 
-## Step 6 : Inspect UIs
+## Step 7 : Inspect UIs
 * Resource Manager UI : to see how the application is running
 * Spark Application UI : to see application progress
 
-## Step 7 : Minimize Logging
+## Step 8 : Minimize Logging
 Are the logs too much and distracting from program output?
 
+#### Option 1 :  Redirect Logs
 To redirect logs, add  '> logs' at the end of the command.  Now all the logs will be sent to file called 'logs', and we can see our program output clearly**
 
 ```
@@ -97,8 +120,42 @@ To redirect logs, add  '> logs' at the end of the command.  Now all the logs wil
 
 ```
 
+#### Option 2 :  Disable logging
+Use  log4j directives.
+We have a `logging/log4j.properties` file.  Inspect this file
 
-## Step 8 : Load All Data
+```
+    $    cat   logging/log4j.properties
+```
+
+
+The file has following contents
+```
+    # Set everything to be logged to the console
+    log4j.rootCategory=WARN, console
+    log4j.appender.console=org.apache.log4j.ConsoleAppender
+    log4j.appender.console.target=System.err
+    log4j.appender.console.layout=org.apache.log4j.PatternLayout
+    log4j.appender.console.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n
+    
+    # Settings to quiet third party logs that are too verbose
+    log4j.logger.org.eclipse.jetty=WARN
+    log4j.logger.org.apache.spark.repl.SparkIMain$exprTyper=INFO
+    log4j.logger.org.apache.spark.repl.SparkILoop$SparkILoopInterpreter=INFO
+```
+
+
+
+```
+    $    spark-submit --master yarn-client \
+         --driver-class-path logging/ \
+         --driver-memory 512m --executor-memory 512m \
+         --num-executors 2 --executor-cores 1  \
+         --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \
+         /user/root/clickstream/in-json/clickstream.json   2> logs
+```
+
+## Step 9 : Load All Data
 Change the input to `/user/root/clickstream/in-json` to load all JSON files.
 
 ```
