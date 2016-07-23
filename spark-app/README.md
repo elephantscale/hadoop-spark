@@ -46,7 +46,10 @@ From the `spark-app` folder
 
 ```bash
 
-    $   sbt package
+    #  go to application dir
+    $   cd  ~/hadoop-spark/spark-app
+
+    $   ~/sbt/bin/sbt package
     #   if running for the first time, go get some coffee :-)
 ```
 
@@ -57,13 +60,12 @@ Before submitting the application to the cluster, let's test it locally to make 
 ```
     $    spark-submit --master local[*] \
          --driver-memory 512m --executor-memory 512m \
-        
          --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \
-         ../data/clickstream/clickstream.json
+         'file:///root/hadoop-spark/data/clickstream/clickstream.json'
 ```
 
 Arguments (must have):
-* --master local[*]: Run in local mode using all CPU cores (*)
+* --master local[* ]: Run in local mode using all CPU cores (*)
 * --class 'x.Clickstream' : name of the class to execute
 * 'target/scala-2.10/testapp_2.10-1.0.jar' : location of jar file
 * input location : point to the data.  Here we are using local file in 'data/clickstream/clickstream.json'
@@ -72,62 +74,24 @@ Arguments (optional):
 * --driver-memory 512m  : memory to be used by client application
 * --executor-memory 512m : memory used by Spark executors
 
-
-## Step 6 : Submit Spark Application to YARN cluster
-Here is the command to submit the Spark application
-
-```
-    $    spark-submit --master local[*] \
-         --driver-memory 512m --executor-memory 512m \
-         --num-executors 2 --executor-cores 1  \
-         --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \
-         /user/root/clickstream/in-json/clickstream.json
-```
-
-
-
-Must have arguments:
-* --master : we are submitting to YARN in 'client' mode.  Another option is `--master yarn-cluster`
-* --class 'x.Clickstream' : name of the class to execute
-* 'target/scala-2.10/testapp_2.10-1.0.jar' : location of jar file
-* input location : point to the data.  Here we are using data in HDFS '/user/root/clickstream/in-json/clickstream.json'
-
-Optional arguments:
-* --driver-memory 512m  : memory to be used by client application
-* --executor-memory 512m : memory used by Spark executors
-* --num-execuctors 2 : how many executors to use
-* --executor-cores 1 : use only 1 CPU core
-
-Since we are running on a virtual machine, we are keeping our resource usage low by specifying low memory usage (512M) and only using one CPU core.
-
-
-## Step 7 : Inspect UIs
-* Resource Manager UI : to see how the application is running
-* Spark Application UI : to see application progress
-
-## Step 8 : Minimize Logging
+## Step 6 : Minimize Logging
 Are the logs too much and distracting from program output?
 
 #### Option 1 :  Redirect Logs
 To redirect logs, add  '> logs' at the end of the command.  Now all the logs will be sent to file called 'logs', and we can see our program output clearly**
 
 ```
-    $    spark-submit --master yarn-client \
+    $    spark-submit --master local[*] \
          --driver-memory 512m --executor-memory 512m \
          --num-executors 2 --executor-cores 1  \
          --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \
-         /user/root/clickstream/in-json/clickstream.json   2> logs
+        'file:///root/hadoop-spark/data/clickstream/clickstream.json'   2> logs
 
 ```
 
 #### Option 2 :  Disable logging
 Use  log4j directives.
 We have a `logging/log4j.properties` file.  Inspect this file
-
-```
-    $    cat   logging/log4j.properties
-```
-
 
 The file has following contents
 ```
@@ -147,19 +111,54 @@ The file has following contents
 
 
 ```
-    $    spark-submit --master yarn-client \
+    $    spark-submit --master local[*] \
          --driver-class-path logging/ \
          --driver-memory 512m --executor-memory 512m \
          --num-executors 2 --executor-cores 1  \
          --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \
-         /user/root/clickstream/in-json/clickstream.json   2> logs
+         'file:///root/hadoop-spark/data/clickstream/clickstream.json' 
 ```
+
+## Step 7 : Submit Spark Application to YARN cluster
+Here is the command to submit the Spark application
+
+```
+    $    spark-submit --master yarn --deploy-mode client \
+         --driver-memory 512m --executor-memory 512m \
+         --num-executors 2 --executor-cores 1  \
+         --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \
+         /user/root/clickstream/in-json/clickstream.json
+```
+
+
+Must have arguments:
+* --master yarn : we are submitting to YARN 
+* --deploy-mode client : in 'client' mode  
+* --class 'x.Clickstream' : name of the class to execute
+* 'target/scala-2.10/testapp_2.10-1.0.jar' : location of jar file
+* input location : point to the data.  Here we are using data in HDFS '/user/root/clickstream/in-json/clickstream.json'
+
+Optional arguments:
+* --driver-memory 512m  : memory to be used by client application
+* --executor-memory 512m : memory used by Spark executors
+* --num-execuctors 2 : how many executors to use
+* --executor-cores 1 : use only 1 CPU core
+
+Since we are running on a virtual machine, we are keeping our resource usage low by specifying low memory usage (512M) and only using one CPU core.
+
+
+## Step 8 : Inspect UIs
+* Resource Manager UI : to see how the application is running
+* Spark Application UI : while it is running
+* Spark History Server UI : After application has finished
+
 
 ## Step 9 : Load All Data
 Change the input to `/user/root/clickstream/in-json` to load all JSON files.
 
 ```
-    $    spark-submit --master yarn-client \
+    $    time \
+         spark-submit --master yarn --deploy-mode client \
          --driver-memory 512m --executor-memory 512m \
          --num-executors 2 --executor-cores 1  \
          --class 'x.Clickstream'  target/scala-2.10/testapp_2.10-1.0.jar \

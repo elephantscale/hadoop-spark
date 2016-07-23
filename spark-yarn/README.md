@@ -37,7 +37,7 @@ Quit the Spark shell by typing `exit`
 Let's launch Spark-shell and connect to YARN
 
 ```
-    $  spark-shell --master yarn-client   \
+    $  spark-shell --master yarn --deploy-mode client   \
        --driver-memory 512m --executor-memory 512m \
        --num-executors 2 --executor-cores 1 
 ```
@@ -47,10 +47,16 @@ Once the shell is running, try the following
     sc.master
 ```
 
+Also if you need to disable logging...
+```
+    sc.setLogLevel("WARN")
+```
+
 Also inspect YARN Resource Manager UI.  Now you'd see the Spark Shell running as application.
 
 #### Arguments Explained
-* --master yarn-client : Using client mode, recommended for interactive applications like Spark Shell
+* --master yarn : submitting to YARN cluster
+* --deploy-mode client : Using client mode, recommended for interactive applications like Spark Shell
 * --driver-memory 512m : specify how much memory the driver needs to use
 * --executor-memory 512m : memory for executors in YARN
 * --num-executors 2 : Use 2 executors for processing

@@ -19,21 +19,22 @@ object Clickstream {
     //conf.setMaster("local[*]")
     val sc = new SparkContext(conf)
     val sqlContext = new org.apache.spark.sql.SQLContext(sc)
-    val clickstream = sqlContext.read.json(input)
 
+    // read data
+    val clickstream = sqlContext.read.json(input)
     // ## Count # of records
     val count =  clickstream.count
     println("### total clickstream records " + count)
 
     // ## Find top-10 domains
     clickstream.registerTempTable("clickstream")
-    val top10 = sqlContext.sql("select domain, count(*) as total from clickstream  group by domain order by total desc")
-    println ("### top domains : \n" + top10.show)
+    val top10 = sqlContext.sql("select domain, count(*) as total from clickstream  group by domain order by total desc limit 10")
+    println ("### top 10 domains" )
+    top10.show
 
     // ## Bonus Lab : more things to try
    //  1 - extract attributes from top10 DF 
    //  2 - find the 'views / clicks' ratio for each domain in top10
-
 
   }
 }
