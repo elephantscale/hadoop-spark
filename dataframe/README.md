@@ -18,10 +18,10 @@ Follow the steps to
     $   cd  hadoop-spark/dataframe
 
     #  create an HDFS directory
-    $   hdfs   dfs -mkdir   clickstream/in-json 
+    $   hdfs   dfs -mkdir  -p clickstream/in-json 
 
     #  copy sample file
-    $   hdfs   dfs   -put   ../data/clickstream/clickstream.json    clickstream/in-json
+    $   hdfs   dfs   -put   ../data/click-stream/clickstream.json    clickstream/in-json
 
 ```
 
