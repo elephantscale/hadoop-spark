@@ -25,3 +25,10 @@ We will be using the following :
 ```
     $     ssh  -l  root   -p 2222   127.0.0.1
 ```
+
+## Cloning Repository
+Here is how to get the working files.
+```
+    $   cd
+    $   git clone https://github.com/elephantscale/hadoop-spark  
+```
